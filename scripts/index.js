@@ -1,19 +1,15 @@
 "use strict";
-//check the points of the dice that were kept
 
-//if all the dice are rolled reroll them all
-//know when to stop and set the score to keep
 let mainScore = 0;
 let scoreDuringRoll = 0;
-//use this to show what the lower board has and a way to check for zilch
-let stay = false; //stay button flag
+
+let stay = false;
 let openingPointsEntry = false; //one tike set only after you have 500 or more points to get on board
-let clickFlag = false; //testing to use this to tell program I have chose dice to keep
+
 let createLowerDiceBoard;
 let removeDiceIndex;
 let createHoldingBoard;
 let diceHeldIndex = 0;
-let topIndex = 0; //not in use
 let numberOfDice = 6;
 let getRandomDice;
 const theDice = [];
@@ -25,6 +21,8 @@ const stayBtn = document.getElementById("stay-btn");
 const rollBtn = document.getElementById("roll-btn");
 const scoreKeeper = document.getElementById("score");
 const possibleScore = document.getElementById("possible-score");
+const zilchWindow = document.getElementById("zilch");
+const zBtn = document.getElementById("zBtn");
 
 function settingUpTheBoard() {
   for (let i = 0; i < 6; i++) {
@@ -38,7 +36,6 @@ function settingUpTheBoard() {
 }
 function preRollCheck() {
   if (topDice.length > 0) {
-    // checkForPoints(topDice);
     addingPoints(checkForPoints(topDice));
     topDice.length = 0;
   }
@@ -52,11 +49,13 @@ function rollDice(numDice) {
     theDice.push(getRandomDice);
     rolledDiceOnTheBoard[i].textContent = getRandomDice;
   }
-  // checkForPoints(theDice); //TODO decide the best place to put this
+
   let tempPoints = checkForPoints(theDice);
   possibleScore.textContent = tempPoints;
-  if (tempPoints == 0 && topDice.length != 6) {
-    diceReset(); //TODO we need to set up a way to tell the player they lost their points
+
+  if (tempPoints == 0 && diceHeldIndex != 6) {
+    zilchPopup();
+    diceReset();
     scoreDuringRoll = 0;
     console.log("Zilch");
   }
@@ -321,7 +320,13 @@ function stayingBtnHit() {
   stay = true; //TODO maybe do the dice number check here
   preRollCheck();
 }
-
+function zilchPopup() {
+  zilchWindow.style.visibility = "visible";
+}
+function closeZilchPopup() {
+  console.log("here");
+  zilchWindow.style.visibility = "hidden";
+}
 //-------------------------------------------starting line----------------------------
 
 settingUpTheBoard();
@@ -335,30 +340,29 @@ rolledDiceOnTheBoard.forEach((die) =>
 
 stayBtn.addEventListener("click", () => {
   stayingBtnHit();
-}); //TODO add points up to score when clicked
+});
 rollBtn.addEventListener("click", () => {
   rollDice(numberOfDice);
 });
+zBtn.addEventListener("click", closeZilchPopup);
 
 //problems to resolve
 //1 keep score ------better but still bugged
-//2 check if any points on roll board to see if there is a Zilch or not----need to notify if zilch
-//add dice to upper board then check the points to add to main-----think I got this
-//3 if the lower board is empty reset the dice to start a new roll while keeping record of points for the round --done maybe
-//4 where and how to reset----think I got this one
 
 //issues
 
-//Maybe I need to make a different function to evaluate what to do before rolling
-//right now rolling is doing all that when all it should do is roll the dice.
-//maybe have a flag for when I click on the dice to tell the program its ok to now check upper score
-
 //------------------------NOTES--------------------------------------------
-//I still have bugs. Crazy I got 6 of a kind in a roll but didn't get the points
-//I think it might have been on how I clicked. I clicked the same die to add to the top since it was
-//easier to do that instead of click each one. That is one theory but haven't tested to see
-//I need to add some css for when I zilch it will popup and tell the player they lost their points
+
 //I haven't set a win yet. use css for that too
 //definitely need to make the board prettier
 //need a break from this one. been on it for a few days fixing bug after bug
 //need a new project to try different ideas out
+
+//-------------------More Notes----------------------------------------
+
+//I have cleaned it up more but still having some issues
+//I'm getting zilch when I have all the dice on the upper rack
+//I haven't got it quite right on how to continue rolling and keeping the points
+//maybe somehow check if I have points to tell computer its not a zilch
+//I was able to get rid of some more variables by passing arguments and returning
+//If I understood classes better I know it would clean this up tremendously
