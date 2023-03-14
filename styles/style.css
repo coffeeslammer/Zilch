@@ -1,0 +1,51 @@
+ * {
+     margin: 0;
+     padding: 0;
+     box-sizing: border-box;
+ }
+
+ body {
+     text-align: center;
+ }
+
+ .board {
+     width: 600px;
+     height: 600px;
+     margin: auto;
+     background-color: green;
+     /* row-gap: 10px; */
+
+ }
+
+ .keep {
+     height: 150px;
+     border: 3px solid lightgreen;
+     margin-bottom: 10px;
+ }
+
+ .rolled,
+ .keep {
+     display: flex;
+     align-items: center;
+     gap: 10px;
+     padding-left: 20px;
+     height: 150px;
+     border: 3px solid lightgreen;
+ }
+
+ .rolled-dice,
+ .kept {
+     width: 75px;
+     height: 75px;
+     padding-left: 5px;
+     background-color: darkgreen;
+     color: white;
+     font-size: 30px;
+     font-weight: 700;
+     /* text-align: center; */
+ }
+
+ #possible-score {
+     font-size: 24px;
+     color: white;
+ }
