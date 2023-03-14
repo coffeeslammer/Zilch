@@ -2,12 +2,9 @@
 
 let mainScore = 0;
 let scoreDuringRoll = 0;
-
 let stay = false;
 let openingPointsEntry = false; //one tike set only after you have 500 or more points to get on board
-
 let createLowerDiceBoard;
-let removeDiceIndex;
 let createHoldingBoard;
 let diceHeldIndex = 0;
 let numberOfDice = 6;
@@ -99,13 +96,14 @@ function clearBoard() {
   clearTop();
   clearBottom();
 }
-
+//BUG right now I can put anything up top
 function diceToKeep(e) {
   addingDice[diceHeldIndex].textContent = e.target.textContent;
-  removeDiceIndex = Array.from(rolledDiceOnTheBoard).indexOf(e.target);
-  topDice.push(theDice.splice(removeDiceIndex, 1));
+  topDice.push(
+    theDice.splice(Array.from(rolledDiceOnTheBoard).indexOf(e.target), 1)
+  );
   numberOfDice--;
-  adjustDiceOnBoard(numberOfDice); //FIXME make a way to wait till the next roll to call this
+  adjustDiceOnBoard(numberOfDice);
   diceHeldIndex++;
 }
 function diceReset() {
@@ -118,7 +116,7 @@ function diceReset() {
 
   clearBoard();
 }
-function checkForStraight(diceScoreTest, tScore) {
+function checkForStraight(diceScoreTest) {
   if (
     diceScoreTest[0] == 1 &&
     diceScoreTest[1] == 1 &&
@@ -127,11 +125,11 @@ function checkForStraight(diceScoreTest, tScore) {
     diceScoreTest[4] == 1 &&
     diceScoreTest[5] == 1
   ) {
-    return (tScore += 1500);
+    return 1500;
   }
   return 0;
 }
-function checkForSixOfaKind(diceScoreTest, tScore) {
+function checkForSixOfaKind(diceScoreTest) {
   if (
     diceScoreTest[0] == 6 ||
     diceScoreTest[1] == 6 ||
@@ -145,80 +143,72 @@ function checkForSixOfaKind(diceScoreTest, tScore) {
     } else if (diceScoreTest[4] == 6) {
       diceScoreTest[4] == 0;
     }
-    return (tScore += 4000);
+    return 4000;
   }
   return 0;
 }
-function checkForFiveOfaKind(diceScoreTest, tScore) {
+function checkForFiveOfaKind(diceScoreTest) {
   if (diceScoreTest[0] == 5) {
-    tScore += 3000;
     diceScoreTest[0] = 0;
+    return 4000;
   } else if (diceScoreTest[1] == 5) {
-    tScore += 2 * 100 * 3;
+    return 1000;
   } else if (diceScoreTest[2] == 5) {
-    tScore += 3 * 100 * 3;
+    return 1500;
   } else if (diceScoreTest[3] == 5) {
-    tScore += 4 * 100 * 3;
+    return 2000;
   } else if (diceScoreTest[4] == 5) {
-    tScore += 5 * 100 * 3;
-    die5.length = 0;
-  } else if (diceScoreTest[5] == 5) {
-    tScore += 6 * 100 * 3;
-  }
-  if (tScore == NaN) {
-    return 0;
-  }
-  return tScore;
-}
-function checkForFourOfaKind(diceScoreTest, tScore) {
-  //TODO the four could be sets of three but I will leave it for now
-  if (diceScoreTest[0] == 4) {
-    tScore += 2000;
-    diceScoreTest[0] = 0;
-  } else if (diceScoreTest[1] == 4) {
-    tScore += 2 * 100 * 2;
-  } else if (diceScoreTest[2] == 4) {
-    tScore += 3 * 100 * 2;
-  } else if (diceScoreTest[3] == 4) {
-    tScore += 4 * 100 * 2;
-  } else if (diceScoreTest[4] == 4) {
-    tScore += 5 * 100 * 2;
     diceScoreTest[4] = 0;
-  } else if (diceScoreTest[5] == 4) {
-    tScore += 6 * 100 * 2;
+    return 2500;
+  } else if (diceScoreTest[5] == 5) {
+    return 3000;
   }
-  if (tScore == NaN) {
-    return 0;
-  }
-  return tScore;
+
+  return 0;
 }
-function checkForThreeOfaKind(diceScoreTest, tScore) {
-  if (diceScoreTest[0] == 3) {
-    tScore += 1000;
+function checkForFourOfaKind(diceScoreTest) {
+  if (diceScoreTest[0] == 4) {
     diceScoreTest[0] = 0;
+    return 3000;
+  } else if (diceScoreTest[1] == 4) {
+    return 800;
+  } else if (diceScoreTest[2] == 4) {
+    return 1200;
+  } else if (diceScoreTest[3] == 4) {
+    return 1600;
+  } else if (diceScoreTest[4] == 4) {
+    diceScoreTest[4] = 0;
+    return 2000;
+  } else if (diceScoreTest[5] == 4) {
+    return 2400;
+  }
+  return 0;
+}
+function checkForThreeOfaKind(diceScoreTest) {
+  let temp = 0; //may have two sets of three
+  if (diceScoreTest[0] == 3) {
+    diceScoreTest[0] = 0;
+    temp += 1000;
   }
   if (diceScoreTest[1] == 3) {
-    tScore += 2 * 100;
+    temp += 200;
   }
   if (diceScoreTest[2] == 3) {
-    tScore += 3 * 100;
+    temp += 300;
   }
   if (diceScoreTest[3] == 3) {
-    tScore += 4 * 100;
+    temp += 400;
   }
   if (diceScoreTest[4] == 3) {
-    tScore += 5 * 100;
     diceScoreTest[4] = 0;
+    temp += 500;
   }
   if (diceScoreTest[5] == 3) {
-    tScore += 6 * 100;
+    temp += 600;
   }
-  if (tScore == NaN) {
-    return 0;
-  }
-  return tScore;
+  return temp;
 }
-function checkForSetsOfTwo(diceScoreTest, tScore) {
+function checkForSetsOfTwo(diceScoreTest) {
   if (
     diceScoreTest[0] == 2 ||
     diceScoreTest[1] == 2 ||
@@ -253,28 +243,25 @@ function checkForSetsOfTwo(diceScoreTest, tScore) {
       if (diceScoreTest[4] == 2) {
         diceScoreTest[4] = 0;
       }
-      return (tScore += 1500);
+      return 1500;
     }
   }
   return 0;
 }
 
-function checkForOnesFives(diceScoreTest, tScore) {
+function checkForOnesFives(diceScoreTest) {
+  let temp = 0;
   if (diceScoreTest[0] >= 1) {
-    tScore += diceScoreTest[0] * 100;
+    temp += diceScoreTest[0] * 100;
   }
   if (diceScoreTest[4] >= 1) {
-    tScore += diceScoreTest[4] * 50;
+    temp += diceScoreTest[4] * 50;
   }
-  if (tScore == NaN) {
-    return 0;
-  }
-  return tScore;
+  return temp;
 }
 
 function checkForPoints(dice) {
   const diceScoreTest = [];
-  let potentialScore = 0;
   let howManyOnes = 0;
   let howManyTwos = 0;
   let howManyThrees = 0;
@@ -282,6 +269,7 @@ function checkForPoints(dice) {
   let howManyFives = 0;
   let howManySixes = 0;
   let points = 0;
+
   for (let i = 0; i < dice.length; i++) {
     if (dice[i] == 1) {
       howManyOnes++;
@@ -305,15 +293,15 @@ function checkForPoints(dice) {
     howManyFives,
     howManySixes
   );
-  console.log(diceScoreTest);
-  points += checkForStraight(diceScoreTest, potentialScore);
-  points += checkForSixOfaKind(diceScoreTest, potentialScore);
-  points += checkForFiveOfaKind(diceScoreTest, potentialScore);
-  points += checkForFourOfaKind(diceScoreTest, potentialScore);
-  points += checkForThreeOfaKind(diceScoreTest, potentialScore);
-  points += checkForSetsOfTwo(diceScoreTest, potentialScore);
-  points += checkForOnesFives(diceScoreTest, potentialScore);
-  // scoreCheckReset(diceScoreTest);
+  console.log(diceScoreTest); //TODO remove after testing
+  points += checkForStraight(diceScoreTest);
+  points += checkForSixOfaKind(diceScoreTest);
+  points += checkForFiveOfaKind(diceScoreTest);
+  points += checkForFourOfaKind(diceScoreTest);
+  points += checkForThreeOfaKind(diceScoreTest);
+  points += checkForSetsOfTwo(diceScoreTest);
+  points += checkForOnesFives(diceScoreTest);
+
   return points;
 }
 function stayingBtnHit() {
