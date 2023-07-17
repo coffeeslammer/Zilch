@@ -1,16 +1,16 @@
 "use strict";
 
-let mainScore = 0;
-let scoreDuringRoll = 0;
-let stay = false;
-let openingPointsEntry = false; //one tike set only after you have 500 or more points to get on board
+let iMainScore = 0;
+let iScoreDuringRoll = 0;
+let bStay = false;
+let bOpeningPointsEntry = false; //one tike set only after you have 500 or more points to get on board
 let createLowerDiceBoard;
 let createHoldingBoard;
-let diceHeldIndex = 0;
-let numberOfDice = 6;
-let getRandomDice;
-const theDice = [];
-const topDice = [];
+let iDiceHeldIndex = 0;
+let iGetRandomDice;
+let iNumberOfDice = 6;
+const aTheDice = [];
+const aTopDice = [];
 
 const rolled = document.querySelector(".rolled");
 const keep = document.querySelector(".keep");
@@ -20,9 +20,11 @@ const scoreKeeper = document.getElementById("score");
 const possibleScore = document.getElementById("possible-score");
 const zilchWindow = document.getElementById("zilch");
 const zBtn = document.getElementById("zBtn");
-
-function settingUpTheBoard() {
-  for (let i = 0; i < 6; i++) {
+//This sets up the blank board
+//createHoldingBoard is the upper section where the dice you keep go
+//createLowerDiceBoard is where you roll the dice
+function settingUpTheBoard(dice) {
+  for (let i = 0; i < dice; i++) {
     createHoldingBoard = document.createElement("div");
     createHoldingBoard.classList.add("kept");
     keep.append(createHoldingBoard);
@@ -31,29 +33,31 @@ function settingUpTheBoard() {
     rolled.append(createLowerDiceBoard);
   }
 }
+//NOTE I think this is to add points to score after every roll??????????????????????????????????????????????????????
+//I think aTopDice was for score keeping to prevent three seperate 1's getting turned from 100 to 1000 etc...?????
 function preRollCheck() {
-  if (topDice.length > 0) {
-    addingPoints(checkForPoints(topDice));
-    topDice.length = 0;
+  if (aTopDice.length > 0) {
+    addingPoints(checkForPoints(aTopDice));
+    aTopDice.length = 0;
   }
 }
-function rollDice(numDice) {
+function rollDice(dice) {
   preRollCheck();
 
-  theDice.length = 0;
-  for (let i = 0; i < numDice; i++) {
-    getRandomDice = Math.floor(Math.random() * 6 + 1);
-    theDice.push(getRandomDice);
-    rolledDiceOnTheBoard[i].textContent = getRandomDice;
+  aTheDice.length = 0; //resets the dice to blank
+  for (let i = 0; i < dice; i++) {
+    iGetRandomDice = Math.floor(Math.random() * 6 + 1);
+    aTheDice.push(iGetRandomDice);
+    rolledDiceOnTheBoard[i].textContent = iGetRandomDice;
   }
-
-  let tempPoints = checkForPoints(theDice);
+  //So far this is the points you see above the buttons
+  let tempPoints = checkForPoints(aTheDice);
   possibleScore.textContent = tempPoints;
-
-  if (tempPoints == 0 && diceHeldIndex != 6) {
+  /////////////////////////////What does dice index for???????????????????????????????????????????????????????????????????
+  if (tempPoints == 0 && iDiceHeldIndex != 6) {
     zilchPopup();
     diceReset();
-    scoreDuringRoll = 0;
+    iScoreDuringRoll = 0;
     console.log("Zilch");
   }
 }
@@ -63,30 +67,32 @@ function adjustDiceOnBoard(dieNumber) {
     rolledDiceOnTheBoard[i].textContent = "";
   }
   for (let i = 0; i < dieNumber; i++) {
-    rolledDiceOnTheBoard[i].textContent = theDice[i];
+    rolledDiceOnTheBoard[i].textContent = aTheDice[i];
   }
 }
 function addingPoints(tempScore) {
-  scoreDuringRoll += tempScore;
+  iScoreDuringRoll += tempScore;
 
-  if (scoreDuringRoll >= 500 && stay && numberOfDice != 0) {
-    openingPointsEntry = true;
+  if (iScoreDuringRoll >= 500 && bStay && iNumberOfDice != 0) {
+    bOpeningPointsEntry = true;
   }
-  if (openingPointsEntry && stay && numberOfDice != 0) {
-    mainScore += scoreDuringRoll;
-    scoreKeeper.textContent = mainScore;
-    scoreDuringRoll = 0;
+  if (bOpeningPointsEntry && bStay && iNumberOfDice != 0) {
+    iMainScore += iScoreDuringRoll;
+    scoreKeeper.textContent = iMainScore;
+    iScoreDuringRoll = 0;
     diceReset();
-  } else if (numberOfDice == 0) {
+  } else if (iNumberOfDice == 0) {
     diceReset(); //TODO tell player they have to roll all the dice but keep what points they have
     console.log("Roll the dice");
   }
 }
+//TODO switch to a forEach() loop of maybe a map();
 function clearTop() {
   for (let i = 0; i < 6; i++) {
     addingDice[i].textContent = "";
   }
 }
+//TODO maybe the same here as for clearTop()
 function clearBottom() {
   for (let i = 0; i < 6; i++) {
     rolledDiceOnTheBoard[i].textContent = "";
@@ -98,25 +104,28 @@ function clearBoard() {
 }
 //BUG right now I can put anything up top
 function diceToKeep(e) {
-  addingDice[diceHeldIndex].textContent = e.target.textContent;
-  topDice.push(
-    theDice.splice(Array.from(rolledDiceOnTheBoard).indexOf(e.target), 1)
+  addingDice[iDiceHeldIndex].textContent = e.target.textContent;
+  aTopDice.push(
+    aTheDice.splice(Array.from(rolledDiceOnTheBoard).indexOf(e.target), 1)
   );
-  numberOfDice--;
-  adjustDiceOnBoard(numberOfDice);
-  diceHeldIndex++;
+  iNumberOfDice--;
+  adjustDiceOnBoard(iNumberOfDice);
+  iDiceHeldIndex++;
 }
 function diceReset() {
-  topDice.length = 0;
-  theDice.length = 0;
+  aTopDice.length = 0;
+  aTheDice.length = 0;
 
-  stay = false;
-  diceHeldIndex = 0;
-  numberOfDice = 6;
+  bStay = false;
+  iDiceHeldIndex = 0;
+  iNumberOfDice = 6;
 
   clearBoard();
 }
 function checkForStraight(diceScoreTest) {
+  //diceScoreTest is an array that added each die and put that die in its proper array.as in
+  //all ones rolled are in [0] while all 2's are in [1] etc.
+  //TODO should be able to just do in a loop with less lines
   if (
     diceScoreTest[0] == 1 &&
     diceScoreTest[1] == 1 &&
@@ -262,6 +271,7 @@ function checkForOnesFives(diceScoreTest) {
 
 function checkForPoints(dice) {
   const diceScoreTest = [];
+  //TODO posibly make this an array
   let howManyOnes = 0;
   let howManyTwos = 0;
   let howManyThrees = 0;
@@ -269,7 +279,7 @@ function checkForPoints(dice) {
   let howManyFives = 0;
   let howManySixes = 0;
   let points = 0;
-
+  //TODO switch to either forEach or map
   for (let i = 0; i < dice.length; i++) {
     if (dice[i] == 1) {
       howManyOnes++;
@@ -285,6 +295,7 @@ function checkForPoints(dice) {
       howManySixes++;
     }
   }
+  //TODO could I just push what is good above?
   diceScoreTest.push(
     howManyOnes,
     howManyTwos,
@@ -305,7 +316,7 @@ function checkForPoints(dice) {
   return points;
 }
 function stayingBtnHit() {
-  stay = true; //TODO maybe do the dice number check here
+  bStay = true; //TODO maybe do the dice number check here
   preRollCheck();
 }
 function zilchPopup() {
@@ -317,7 +328,7 @@ function closeZilchPopup() {
 }
 //-------------------------------------------starting line----------------------------
 
-settingUpTheBoard();
+settingUpTheBoard(iNumberOfDice);
 
 const rolledDiceOnTheBoard = document.querySelectorAll(".rolled-dice");
 const addingDice = document.querySelectorAll(".kept");
@@ -330,7 +341,7 @@ stayBtn.addEventListener("click", () => {
   stayingBtnHit();
 });
 rollBtn.addEventListener("click", () => {
-  rollDice(numberOfDice);
+  rollDice(iNumberOfDice);
 });
 zBtn.addEventListener("click", closeZilchPopup);
 
