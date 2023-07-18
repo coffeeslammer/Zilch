@@ -48,6 +48,8 @@ function rollDice(dice) {
   for (let i = 0; i < dice; i++) {
     iGetRandomDice = Math.floor(Math.random() * 6 + 1);
     aTheDice.push(iGetRandomDice);
+    // aTheDice.push(2);
+
     rolledDiceOnTheBoard[i].textContent = iGetRandomDice;
   }
   //So far this is the points you see above the buttons
@@ -125,28 +127,18 @@ function diceReset() {
 function checkForStraight(diceScoreTest) {
   //diceScoreTest is an array that added each die and put that die in its proper array.as in
   //all ones rolled are in [0] while all 2's are in [1] etc.
-  //TODO should be able to just do in a loop with less lines
-  if (
-    diceScoreTest[0] == 1 &&
-    diceScoreTest[1] == 1 &&
-    diceScoreTest[2] == 1 &&
-    diceScoreTest[3] == 1 &&
-    diceScoreTest[4] == 1 &&
-    diceScoreTest[5] == 1
-  ) {
+  //The diceScoreTest[0] = 0 and diceScoreTest[4] = 0 is making sure the 1 and 5 are counted
+  //separate since they are already being used elsewhere for points. prevents double dipping
+  if (diceScoreTest.every((die) => die == 1)) {
+    diceScoreTest[0] = 0;
+    diceScoreTest[4] = 0;
     return 1500;
   }
+
   return 0;
 }
 function checkForSixOfaKind(diceScoreTest) {
-  if (
-    diceScoreTest[0] == 6 ||
-    diceScoreTest[1] == 6 ||
-    diceScoreTest[2] == 6 ||
-    diceScoreTest[3] == 6 ||
-    diceScoreTest[4] == 6 ||
-    diceScoreTest[5] == 6
-  ) {
+  if (diceScoreTest.some((die) => die == 6)) {
     if (diceScoreTest[0] == 6) {
       diceScoreTest[0] = 0;
     } else if (diceScoreTest[4] == 6) {
@@ -270,40 +262,26 @@ function checkForOnesFives(diceScoreTest) {
 }
 
 function checkForPoints(dice) {
-  const diceScoreTest = [];
-  //TODO posibly make this an array
-  let howManyOnes = 0;
-  let howManyTwos = 0;
-  let howManyThrees = 0;
-  let howManyFours = 0;
-  let howManyFives = 0;
-  let howManySixes = 0;
+  const diceScoreTest = [0, 0, 0, 0, 0, 0];
+
   let points = 0;
-  //TODO switch to either forEach or map
+  //TODO switch to either forEach or map maybe
   for (let i = 0; i < dice.length; i++) {
     if (dice[i] == 1) {
-      howManyOnes++;
+      diceScoreTest[0]++;
     } else if (dice[i] == 2) {
-      howManyTwos++;
+      diceScoreTest[1]++;
     } else if (dice[i] == 3) {
-      howManyThrees++;
+      diceScoreTest[2]++;
     } else if (dice[i] == 4) {
-      howManyFours++;
+      diceScoreTest[3]++;
     } else if (dice[i] == 5) {
-      howManyFives++;
+      diceScoreTest[4]++;
     } else if (dice[i] == 6) {
-      howManySixes++;
+      diceScoreTest[5]++;
     }
   }
-  //TODO could I just push what is good above?
-  diceScoreTest.push(
-    howManyOnes,
-    howManyTwos,
-    howManyThrees,
-    howManyFours,
-    howManyFives,
-    howManySixes
-  );
+
   console.log(diceScoreTest); //TODO remove after testing
   points += checkForStraight(diceScoreTest);
   points += checkForSixOfaKind(diceScoreTest);
