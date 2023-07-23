@@ -25,10 +25,10 @@ const zBtn = document.querySelector(".zBtn");
 //createLowerDiceBoard is where you roll the dice
 function settingUpTheBoard(dice) {
   for (let i = 0; i < dice; i++) {
-    createHoldingBoard = document.createElement("div");
+    createHoldingBoard = document.createElement("button");
     createHoldingBoard.classList.add("kept");
     keep.append(createHoldingBoard);
-    createLowerDiceBoard = document.createElement("div");
+    createLowerDiceBoard = document.createElement("button");
     createLowerDiceBoard.classList.add("rolled-dice");
     rolled.append(createLowerDiceBoard);
   }
@@ -41,9 +41,12 @@ function preRollCheck() {
     aTopDice.length = 0;
   }
 }
+function clearAttributes() {
+  rolledDiceOnTheBoard.forEach((die) => die.removeAttribute("disabled"));
+}
 function rollDice(dice) {
   preRollCheck();
-
+  clearAttributes();
   aTheDice.length = 0; //resets the dice to blank
   for (let i = 0; i < dice; i++) {
     iGetRandomDice = Math.floor(Math.random() * 6 + 1);
@@ -105,19 +108,24 @@ function clearBoard() {
   clearBottom();
 }
 //BUG right now I can put anything up top
-function diceToKeep(e) {
-  console.log(e.target.getAttribute("data")); //TEST
-  if (e.target.getAttribute("data") === "straight") {
-    console.log("I made it here");
-    //do something in here to group the dice and move them up to top and add the points
-  }
-  addingDice[iDiceHeldIndex].textContent = e.target.textContent;
-  aTopDice.push(aTheDice.splice(aTheDice.indexOf(+e.target.textContent), 1));
+function diceToKeep() {
+  // console.log(this);
+  // console.log(this.getAttribute("data")); //TEST
+  // if (
+  //   this.getAttribute("data") === "one" //&&
+  // this.getAttribute("data") != null
+  // ) {
+  //   console.log("I made it here");
+  //do something in here to group the dice and move them up to top and add the points
+  addingDice[iDiceHeldIndex].textContent = this.textContent;
+  aTopDice.push(aTheDice.splice(aTheDice.indexOf(+this.textContent), 1));
+  this.textContent = "";
+  // }
   // aTopDice.push(
   //   aTheDice.splice(Array.from(rolledDiceOnTheBoard).indexOf(e.target), 1) //TODO understand this line
   // );
   iNumberOfDice--;
-  adjustDiceOnBoard(iNumberOfDice);
+  // adjustDiceOnBoard(iNumberOfDice);
   iDiceHeldIndex++;
 }
 function diceReset() {
@@ -136,8 +144,8 @@ function checkForStraight(diceScoreTest) {
   //The diceScoreTest[0] = 0 and diceScoreTest[4] = 0 is making sure the 1 and 5 are counted
   //separate since they are already being used elsewhere for points. prevents double dipping
   if (diceScoreTest.every((die) => die == 1)) {
-    diceScoreTest[0] = 0;
-    diceScoreTest[4] = 0;
+    diceScoreTest.length = 0;
+    // diceScoreTest[4] = 0; //FIXME I should just clear it out since it is done
     rolledDiceOnTheBoard.forEach((die) => die.setAttribute("data", "straight"));
     return 1500;
   }
@@ -151,24 +159,30 @@ function checkForSixOfaKind(diceScoreTest) {
     } else if (diceScoreTest[4] == 6) {
       diceScoreTest[4] == 0;
     }
+    diceScoreTest.length = 0; //FIXME testing if this works to keep from double dipping
     return 4000;
   }
   return 0;
 }
 function checkForFiveOfaKind(diceScoreTest) {
   if (diceScoreTest[0] == 5) {
-    diceScoreTest[0] = 0;
+    diceScoreTest[0] = 0; //FIXME testing if this I can after check disable any buttons still left
     return 4000;
   } else if (diceScoreTest[1] == 5) {
+    diceScoreTest[1] = 0;
     return 1000;
   } else if (diceScoreTest[2] == 5) {
+    diceScoreTest[2] = 0;
     return 1500;
   } else if (diceScoreTest[3] == 5) {
+    diceScoreTest[3] = 0;
     return 2000;
   } else if (diceScoreTest[4] == 5) {
     diceScoreTest[4] = 0;
+    // diceScoreTest[4] = 0;
     return 2500;
   } else if (diceScoreTest[5] == 5) {
+    diceScoreTest[5] = 0;
     return 3000;
   }
 
@@ -179,15 +193,20 @@ function checkForFourOfaKind(diceScoreTest) {
     diceScoreTest[0] = 0;
     return 3000;
   } else if (diceScoreTest[1] == 4) {
+    diceScoreTest[1] = 0;
     return 800;
   } else if (diceScoreTest[2] == 4) {
+    diceScoreTest[2] = 0;
     return 1200;
   } else if (diceScoreTest[3] == 4) {
+    diceScoreTest[3] = 0;
     return 1600;
   } else if (diceScoreTest[4] == 4) {
     diceScoreTest[4] = 0;
+    // diceScoreTest[4] = 0;
     return 2000;
   } else if (diceScoreTest[5] == 4) {
+    diceScoreTest[5] = 0;
     return 2400;
   }
   return 0;
@@ -199,12 +218,15 @@ function checkForThreeOfaKind(diceScoreTest) {
     temp += 1000;
   }
   if (diceScoreTest[1] == 3) {
+    diceScoreTest[1] = 0;
     temp += 200;
   }
   if (diceScoreTest[2] == 3) {
+    diceScoreTest[2] = 0;
     temp += 300;
   }
   if (diceScoreTest[3] == 3) {
+    diceScoreTest[3] = 0;
     temp += 400;
   }
   if (diceScoreTest[4] == 3) {
@@ -212,6 +234,7 @@ function checkForThreeOfaKind(diceScoreTest) {
     temp += 500;
   }
   if (diceScoreTest[5] == 3) {
+    diceScoreTest[5] = 0;
     temp += 600;
   }
   return temp;
@@ -227,30 +250,36 @@ function checkForSetsOfTwo(diceScoreTest) {
   ) {
     let temp = 0;
     if (diceScoreTest[0] == 2) {
+      // diceScoreTest[0] = 0;
       temp += 1;
     }
     if (diceScoreTest[1] == 2) {
+      // diceScoreTest[1] = 0;
       temp += 1;
     }
     if (diceScoreTest[2] == 2) {
+      // diceScoreTest[2] = 0;
       temp += 1;
     }
     if (diceScoreTest[3] == 2) {
+      // diceScoreTest[3] = 0;
       temp += 1;
     }
     if (diceScoreTest[4] == 2) {
+      // diceScoreTest[4] = 0;
       temp += 1;
     }
     if (diceScoreTest[5] == 2) {
+      // diceScoreTest[5] = 0;
       temp += 1;
     }
     if (temp == 3) {
-      if (diceScoreTest[0] == 2) {
-        diceScoreTest[0] = 0;
-      }
-      if (diceScoreTest[4] == 2) {
-        diceScoreTest[4] = 0;
-      }
+      // if (diceScoreTest[0] == 2) {
+      //   // diceScoreTest[0] = 0;
+      // }
+      // if (diceScoreTest[4] == 2) {
+      //   // diceScoreTest[4] = 0;
+      // }
       return 1500;
     }
   }
@@ -259,8 +288,42 @@ function checkForSetsOfTwo(diceScoreTest) {
 
 function checkForOnesFives(diceScoreTest) {
   let temp = 0;
+
+  if (diceScoreTest[1] > 0) {
+    rolledDiceOnTheBoard.forEach((die) => {
+      if (die.textContent == 2) {
+        die.setAttribute("disabled", "disabled");
+      }
+    });
+  }
+  if (diceScoreTest[2] > 0) {
+    rolledDiceOnTheBoard.forEach((die) => {
+      if (die.textContent == 3) {
+        die.setAttribute("disabled", "disabled");
+      }
+    });
+  }
+  if (diceScoreTest[3] > 0) {
+    rolledDiceOnTheBoard.forEach((die) => {
+      if (die.textContent == 4) {
+        die.setAttribute("disabled", "disabled");
+      }
+    });
+  }
+  if (diceScoreTest[5] > 0) {
+    rolledDiceOnTheBoard.forEach((die) => {
+      if (die.textContent == 6) {
+        die.setAttribute("disabled", "disabled");
+      }
+    });
+  }
+
   if (diceScoreTest[0] >= 1) {
     temp += diceScoreTest[0] * 100;
+    rolledDiceOnTheBoard.forEach((die) => {
+      console.log(die);
+      if (die.textContent == 1) die.setAttribute("data", "one");
+    }); //TODO testing
   }
   if (diceScoreTest[4] >= 1) {
     temp += diceScoreTest[4] * 50;
@@ -326,6 +389,7 @@ stayBtn.addEventListener("click", () => {
   stayingBtnHit();
 });
 rollBtn.addEventListener("click", () => {
+  adjustDiceOnBoard(iNumberOfDice);
   rollDice(iNumberOfDice);
 });
 zBtn.addEventListener("click", closeZilchPopup);
