@@ -1,24 +1,46 @@
  * {
+
+     box-sizing: border-box;
+ }
+
+ body,
+ h1,
+ h2,
+ p {
      margin: 0;
      padding: 0;
-     box-sizing: border-box;
  }
 
  body {
      text-align: center;
      background-color: rgb(126, 203, 148);
+     display: grid;
+     justify-content: center;
+     /* align-items: center; */
+     min-height: 100vh;
+ }
+
+ h1 {
+     margin-top: 3rem;
+     margin-bottom: 2rem;
+ }
+
+ .players p {
+     font-size: 1.25rem;
  }
 
  .board {
      position: relative;
-     width: 600px;
+     /* padding-top: 2rem; */
+     width: 800px;
      height: 600px;
-     margin: auto;
+     /* margin: auto; */
      background-color: green;
+     border: 8px solid darkgreen;
 
  }
 
- #zilch {
+ .zilch {
      position: absolute;
      left: 50%;
      top: 50%;
@@ -32,33 +54,37 @@
      z-index: 5;
  }
 
- #zilch button {
+ .zilch button {
      position: absolute;
      left: 125px;
      bottom: 20px;
  }
 
- h2 {
+ /* h2 {
      margin-top: 25%;
      margin-bottom: 25%;
- }
+ } */
 
  .keep {
      display: grid;
      justify-content: center;
      height: 150px;
-     border: 3px solid lightgreen;
-     margin-bottom: 10px;
+     /* border: 3px solid lightgreen; */
+     /* margin-top: 2rem; */
  }
 
  .rolled,
  .keep {
      display: grid;
-     justify-content: center;
+     justify-content: space-evenly;
      grid-template-columns: repeat(6, 1fr);
      align-items: center;
      height: 150px;
-     border: 3px solid lightgreen;
+     /* border: 3px solid lightgreen; */
+ }
+
+ .rolled {
+     border-bottom: 3px solid darkgreen;
  }
 
  .rolled-dice,
@@ -77,7 +103,31 @@
 
  }
 
- #possible-score {
+ .middle {
+     /* margin-top: 2rem;
+     margin-bottom: 2rem; */
+     padding-top: 24px;
+     padding-bottom: 24px;
+     border-top: 3px solid darkgreen;
+     border-bottom: 3px solid darkgreen;
+ }
+
+ .middle p {
+     font-size: 1.5rem;
+     color: lightgreen;
+ }
+
+ .possible-score {
      font-size: 24px;
      color: white;
+ }
+
+ .points-rolled {
+     padding-top: 16px;
+ }
+
+ .roll-btn,
+ .stay-btn {
+     font-size: 1.5rem;
+     padding: 6px 24px;
  }

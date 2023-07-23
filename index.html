@@ -11,22 +11,32 @@
 </head>
 
 <body>
-    <header>
-        <h1>ZILCH</h1>
-        <p>You score is <strong id="score"></strong> </p>
-    </header>
-    <div class="board">
-        <div id="zilch">
-            <h2>You Got Zilch</h2>
-            <button id="zBtn">Continue</button>
-        </div>
-        <div class="keep"></div>
-        <div class="rolled"></div>
-        <p id="possible-score">0</p>
-        <button id="roll-btn">Roll</button>
-        <button id="stay-btn">Stay</button>
-    </div>
 
+    <main>
+        <div class="players">
+            <h1>The Game of Zilch</h1>
+            <h2>Your Name</h2>
+            <p>You score is: <strong class="score">0</strong> </p>
+        </div>
+        <div class="board">
+            <div class="zilch">
+                <h2>You Got Zilch</h2>
+                <button class="zBtn">Continue</button>
+            </div>
+            <div class="keep"></div>
+            <div class="middle">
+                <h2>Current Points:</h2>
+                <p class="acumalated-points">0</p>
+            </div>
+            <div class="rolled"></div>
+            <div class="points-rolled">
+                <h2>Points Rolled:</h2>
+                <p class="possible-score">0</p>
+            </div>
+            <button class="roll-btn">Roll</button>
+            <button class="stay-btn">Stay</button>
+        </div>
+    </main>
     <script src="scripts/index.js"></script>
 </body>
 

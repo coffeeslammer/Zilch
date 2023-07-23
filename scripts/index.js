@@ -14,12 +14,12 @@ const aTopDice = [];
 
 const rolled = document.querySelector(".rolled");
 const keep = document.querySelector(".keep");
-const stayBtn = document.getElementById("stay-btn");
-const rollBtn = document.getElementById("roll-btn");
-const scoreKeeper = document.getElementById("score");
-const possibleScore = document.getElementById("possible-score");
-const zilchWindow = document.getElementById("zilch");
-const zBtn = document.getElementById("zBtn");
+const stayBtn = document.querySelector(".stay-btn");
+const rollBtn = document.querySelector(".roll-btn");
+const scoreKeeper = document.querySelector(".score");
+const possibleScore = document.querySelector(".possible-score");
+const zilchWindow = document.querySelector(".zilch");
+const zBtn = document.querySelector(".zBtn");
 //This sets up the blank board
 //createHoldingBoard is the upper section where the dice you keep go
 //createLowerDiceBoard is where you roll the dice
@@ -48,7 +48,7 @@ function rollDice(dice) {
   for (let i = 0; i < dice; i++) {
     iGetRandomDice = Math.floor(Math.random() * 6 + 1);
     aTheDice.push(iGetRandomDice);
-    // aTheDice.push(2);
+    // aTheDice.push(i + 1);
 
     rolledDiceOnTheBoard[i].textContent = iGetRandomDice;
   }
@@ -106,10 +106,16 @@ function clearBoard() {
 }
 //BUG right now I can put anything up top
 function diceToKeep(e) {
+  console.log(e.target.getAttribute("data")); //TEST
+  if (e.target.getAttribute("data") === "straight") {
+    console.log("I made it here");
+    //do something in here to group the dice and move them up to top and add the points
+  }
   addingDice[iDiceHeldIndex].textContent = e.target.textContent;
-  aTopDice.push(
-    aTheDice.splice(Array.from(rolledDiceOnTheBoard).indexOf(e.target), 1)
-  );
+  aTopDice.push(aTheDice.splice(aTheDice.indexOf(+e.target.textContent), 1));
+  // aTopDice.push(
+  //   aTheDice.splice(Array.from(rolledDiceOnTheBoard).indexOf(e.target), 1) //TODO understand this line
+  // );
   iNumberOfDice--;
   adjustDiceOnBoard(iNumberOfDice);
   iDiceHeldIndex++;
@@ -132,6 +138,7 @@ function checkForStraight(diceScoreTest) {
   if (diceScoreTest.every((die) => die == 1)) {
     diceScoreTest[0] = 0;
     diceScoreTest[4] = 0;
+    rolledDiceOnTheBoard.forEach((die) => die.setAttribute("data", "straight"));
     return 1500;
   }
 
