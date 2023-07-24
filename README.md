@@ -2,15 +2,18 @@
 
 This was one of my first projects when first learning javascript. This and Wordle. I didn't (and still really don't) know git and github that well. I am starting to upload them for git and github practice, and maybe to show to get help when needed.
 
-## Issues
+## Issues to work on
 
 - set up to switch between players
 - beginning if can't get on board but try to stay tell why can't stay
-- Need a way of tell player to keep rolling if all 6 are on top
+- Need a way of telling the player to keep rolling if all 6 are on top
 - when all 6 are up top if I hit roll I get zilch instead of a new set of rolls
-- make notes about what everything does
-- need to update notes on preRollCheck()
+- ~~make notes about what everything does~~
 - need current score to show while playing. right now it only shows potential score
+- I think I need to add a gameManager() function
+- I still have to fix the checkForSetsOfTwo() to be able to get clicked and added to the top board
+- need to make addingPoints() not care what it is adding for friendlier usability
+- rollDice() should only roll the dice
 
 # How To Play
 
@@ -47,3 +50,9 @@ I'm sure I have missed something or my points may not even match what I wrote. J
 - after you hit stay move to next player.
 - have players names on the outside of the board with their name and score. get fancy add a pic
 - give a delayed zilch across the screen when you lose turn
+
+## Updates
+
+- I have fixed the layout to look a little better. Still have plans for more.
+- I created a map because I am starting to get spaghetti code.
+- I have made it so you can't add the wrong dice up to the upper board
