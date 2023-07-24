@@ -20,7 +20,7 @@ const scoreKeeper = document.querySelector(".score");
 const possibleScore = document.querySelector(".possible-score");
 const zilchWindow = document.querySelector(".zilch");
 const zBtn = document.querySelector(".zBtn");
-//This sets up the blank board
+//NOTEThis sets up the blank board
 //createHoldingBoard is the upper section where the dice you keep go
 //createLowerDiceBoard is where you roll the dice
 function settingUpTheBoard(dice) {
@@ -34,7 +34,7 @@ function settingUpTheBoard(dice) {
   }
 }
 //NOTE I think this is to add points to score after every roll??????????????????????????????????????????????????????
-//I think aTopDice was for score keeping to prevent three seperate 1's getting turned from 100 to 1000 etc...?????
+//I think aTopDice was for score keeping to prevent three separate 1's getting turned from 100 to 1000 etc...?????
 function preRollCheck() {
   if (aTopDice.length > 0) {
     addingPoints(checkForPoints(aTopDice));
@@ -58,7 +58,7 @@ function rollDice(dice) {
   //So far this is the points you see above the buttons
   let tempPoints = checkForPoints(aTheDice);
   possibleScore.textContent = tempPoints;
-  /////////////////////////////What does dice index for???????????????????????????????????????????????????????????????????
+
   if (tempPoints == 0 && iDiceHeldIndex != 6) {
     zilchPopup();
     diceReset();
@@ -66,7 +66,8 @@ function rollDice(dice) {
     console.log("Zilch");
   }
 }
-//This is for after you click on a die to keep it will refresh the rolled dice and shift down if necessary
+l;
+//NOTE This is for after you click on a die to keep it will refresh the rolled dice and shift down if necessary
 function adjustDiceOnBoard(dieNumber) {
   for (let i = 0; i < 6; i++) {
     rolledDiceOnTheBoard[i].textContent = "";
@@ -107,25 +108,15 @@ function clearBoard() {
   clearTop();
   clearBottom();
 }
-//BUG right now I can put anything up top
+
 function diceToKeep() {
-  // console.log(this);
-  // console.log(this.getAttribute("data")); //TEST
-  // if (
-  //   this.getAttribute("data") === "one" //&&
-  // this.getAttribute("data") != null
-  // ) {
-  //   console.log("I made it here");
-  //do something in here to group the dice and move them up to top and add the points
+  //FIXME do something in here to group the dice and move them up to top and add the points
   addingDice[iDiceHeldIndex].textContent = this.textContent;
   aTopDice.push(aTheDice.splice(aTheDice.indexOf(+this.textContent), 1));
   this.textContent = "";
-  // }
-  // aTopDice.push(
-  //   aTheDice.splice(Array.from(rolledDiceOnTheBoard).indexOf(e.target), 1) //TODO understand this line
-  // );
+
   iNumberOfDice--;
-  // adjustDiceOnBoard(iNumberOfDice);
+
   iDiceHeldIndex++;
 }
 function diceReset() {
@@ -139,13 +130,12 @@ function diceReset() {
   clearBoard();
 }
 function checkForStraight(diceScoreTest) {
-  //diceScoreTest is an array that added each die and put that die in its proper array.as in
+  //NOTE diceScoreTest is an array that added each die and put that die in its proper array.as in
   //all ones rolled are in [0] while all 2's are in [1] etc.
   //The diceScoreTest[0] = 0 and diceScoreTest[4] = 0 is making sure the 1 and 5 are counted
   //separate since they are already being used elsewhere for points. prevents double dipping
   if (diceScoreTest.every((die) => die == 1)) {
     diceScoreTest.length = 0;
-    // diceScoreTest[4] = 0; //FIXME I should just clear it out since it is done
     rolledDiceOnTheBoard.forEach((die) => die.setAttribute("data", "straight"));
     return 1500;
   }
@@ -203,7 +193,6 @@ function checkForFourOfaKind(diceScoreTest) {
     return 1600;
   } else if (diceScoreTest[4] == 4) {
     diceScoreTest[4] = 0;
-    // diceScoreTest[4] = 0;
     return 2000;
   } else if (diceScoreTest[5] == 4) {
     diceScoreTest[5] = 0;
@@ -250,39 +239,28 @@ function checkForSetsOfTwo(diceScoreTest) {
   ) {
     let temp = 0;
     if (diceScoreTest[0] == 2) {
-      // diceScoreTest[0] = 0;
       temp += 1;
     }
     if (diceScoreTest[1] == 2) {
-      // diceScoreTest[1] = 0;
       temp += 1;
     }
     if (diceScoreTest[2] == 2) {
-      // diceScoreTest[2] = 0;
       temp += 1;
     }
     if (diceScoreTest[3] == 2) {
-      // diceScoreTest[3] = 0;
       temp += 1;
     }
     if (diceScoreTest[4] == 2) {
-      // diceScoreTest[4] = 0;
       temp += 1;
     }
     if (diceScoreTest[5] == 2) {
-      // diceScoreTest[5] = 0;
       temp += 1;
     }
     if (temp == 3) {
-      // if (diceScoreTest[0] == 2) {
-      //   // diceScoreTest[0] = 0;
-      // }
-      // if (diceScoreTest[4] == 2) {
-      //   // diceScoreTest[4] = 0;
-      // }
       return 1500;
     }
   }
+  //BUG I still need to add disable if no three sets
   return 0;
 }
 
@@ -323,7 +301,7 @@ function checkForOnesFives(diceScoreTest) {
     rolledDiceOnTheBoard.forEach((die) => {
       console.log(die);
       if (die.textContent == 1) die.setAttribute("data", "one");
-    }); //TODO testing
+    }); //FIXME testing
   }
   if (diceScoreTest[4] >= 1) {
     temp += diceScoreTest[4] * 50;
@@ -352,7 +330,6 @@ function checkForPoints(dice) {
     }
   }
 
-  console.log(diceScoreTest); //TODO remove after testing
   points += checkForStraight(diceScoreTest);
   points += checkForSixOfaKind(diceScoreTest);
   points += checkForFiveOfaKind(diceScoreTest);
@@ -403,8 +380,6 @@ zBtn.addEventListener("click", closeZilchPopup);
 
 //I haven't set a win yet. use css for that too
 //definitely need to make the board prettier
-//need a break from this one. been on it for a few days fixing bug after bug
-//need a new project to try different ideas out
 
 //-------------------More Notes----------------------------------------
 

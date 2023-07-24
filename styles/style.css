@@ -60,11 +60,6 @@
      bottom: 20px;
  }
 
- /* h2 {
-     margin-top: 25%;
-     margin-bottom: 25%;
- } */
-
  .keep {
      display: grid;
      justify-content: center;
@@ -95,7 +90,6 @@
      margin: auto;
      width: 75px;
      height: 75px;
-
      background-color: darkgreen;
      color: white;
      font-size: 30px;
@@ -104,8 +98,6 @@
  }
 
  .middle {
-     /* margin-top: 2rem;
-     margin-bottom: 2rem; */
      padding-top: 24px;
      padding-bottom: 24px;
      border-top: 3px solid darkgreen;
