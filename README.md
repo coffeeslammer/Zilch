@@ -4,9 +4,13 @@ This was one of my first projects when first learning javascript. This and Wordl
 
 ## Issues to work on
 
+- set up a splash screen with intro, ask how many players, and what ever else I think of
+- probably should set up a computer player to play against. (that might be a challenge)
 - set up to switch between players
 - beginning if can't get on board but try to stay tell why can't stay
 - Need a way of telling the player to keep rolling if all 6 are on top
+- maybe when all 6 are up top leave for a few seconds before the go with a note of where or why
+- As of now it is not mobile friendly, need to work on that
 - ~~when all 6 are up top if I hit roll I get zilch instead of a new set of rolls~~
 - ~~make notes about what everything does~~
 - ~~need current score to show while playing. right now it only shows potential score~~
