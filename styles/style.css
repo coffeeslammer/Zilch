@@ -32,8 +32,8 @@
  .board {
      position: relative;
      /* padding-top: 2rem; */
-     width: 800px;
-     height: 600px;
+     width: 400px;
+     height: 400px;
      /* margin: auto; */
      background-color: green;
      border: 8px solid darkgreen;
@@ -61,9 +61,9 @@
  }
 
  .keep {
-     display: grid;
-     justify-content: center;
-     height: 150px;
+     /* display: grid; */
+     /* justify-content: center; */
+     /* height: 150px; */
      /* border: 3px solid lightgreen; */
      /* margin-top: 2rem; */
  }
@@ -74,7 +74,7 @@
      justify-content: space-evenly;
      grid-template-columns: repeat(6, 1fr);
      align-items: center;
-     height: 150px;
+     height: 100px;
      /* border: 3px solid lightgreen; */
  }
 
@@ -88,8 +88,8 @@
      justify-content: center;
      align-items: center;
      margin: auto;
-     width: 75px;
-     height: 75px;
+     width: 50px;
+     height: 50px;
      background-color: darkgreen;
      color: white;
      font-size: 30px;
@@ -98,13 +98,15 @@
  }
 
  .middle {
-     padding-top: 24px;
-     padding-bottom: 24px;
+     display: flex;
+     padding-top: 12px;
+     padding-bottom: 12px;
      border-top: 3px solid darkgreen;
      border-bottom: 3px solid darkgreen;
  }
 
  .middle p {
+     /* display: inline; */
      font-size: 1.5rem;
      color: lightgreen;
  }
@@ -115,6 +117,7 @@
  }
 
  .points-rolled {
+     display: flex;
      padding-top: 16px;
  }
 
@@ -122,4 +125,36 @@
  .stay-btn {
      font-size: 1.5rem;
      padding: 6px 24px;
+ }
+
+ @media screen and (min-width: 625px) {
+     .board {
+         width: 600px;
+         height: 600px;
+     }
+
+     .rolled,
+     .keep {
+         height: 150px;
+     }
+
+     .rolled-dice,
+     .kept {
+         width: 75px;
+         height: 75px;
+     }
+
+     .middle {
+         padding-top: 24px;
+         padding-bottom: 24px;
+         /* border-top: 3px solid darkgreen; */
+         /* border-bottom: 3px solid darkgreen; */
+     }
+ }
+
+ @media (min-width: 825px) {
+     .board {
+         width: 800px;
+         height: 600px;
+     }
  }
