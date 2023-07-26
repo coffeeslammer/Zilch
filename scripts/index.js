@@ -3,36 +3,25 @@
 let iMainScore = 0;
 let iScoreDuringRoll = 0;
 let bStay = false;
+const aThreeKind = [];
 let bOpeningPointsEntry = false; //one tike set only after you have 500 or more points to get on board
-let createLowerDiceBoard;
-let createHoldingBoard;
+// let createLowerDiceBoard;
+// let createHoldingBoard;
 let iDiceHeldIndex = 0;
 let iGetRandomDice;
 let iNumberOfDice = 6;
 const aTheDice = [];
 const aTopDice = [];
 
-const rolled = document.querySelector(".rolled");
-const keep = document.querySelector(".keep");
+// const rolled = document.querySelector(".rolled");
+// const keep = document.querySelector(".keep");
 const stayBtn = document.querySelector(".stay-btn");
 const rollBtn = document.querySelector(".roll-btn");
 const scoreKeeper = document.querySelector(".score");
 const possibleScore = document.querySelector(".possible-score");
 const zilchWindow = document.querySelector(".zilch");
 const zBtn = document.querySelector(".zBtn");
-//NOTEThis sets up the blank board
-//createHoldingBoard is the upper section where the dice you keep go
-//createLowerDiceBoard is where you roll the dice
-function settingUpTheBoard(dice) {
-  for (let i = 0; i < dice; i++) {
-    createHoldingBoard = document.createElement("button");
-    createHoldingBoard.classList.add("kept");
-    keep.append(createHoldingBoard);
-    createLowerDiceBoard = document.createElement("button");
-    createLowerDiceBoard.classList.add("rolled-dice");
-    rolled.append(createLowerDiceBoard);
-  }
-}
+
 //NOTE I think this is to add points to score after every roll??????????????????????????????????????????????????????
 //I think aTopDice was for score keeping to prevent three separate 1's getting turned from 100 to 1000 etc...?????
 function preRollCheck() {
@@ -41,20 +30,31 @@ function preRollCheck() {
     aTopDice.length = 0;
   }
 }
-function clearAttributes() {
-  rolledDiceOnTheBoard.forEach((die) => die.removeAttribute("disabled"));
-}
+let index = 0; //FIXME this is just for debugging issues
+
 function rollDice(dice) {
   preRollCheck();
-  clearAttributes();
+  clearDataAttributes();
   aTheDice.length = 0; //resets the dice to blank
-  for (let i = 0; i < dice; i++) {
-    iGetRandomDice = Math.floor(Math.random() * 6 + 1);
-    aTheDice.push(iGetRandomDice);
-    // aTheDice.push(i + 1);
-
-    rolledDiceOnTheBoard[i].textContent = iGetRandomDice;
+  //DEBUG ============================================================================
+  if (index === 0) {
+    aTheDice.push(5, 4, 4, 4, 5, 5);
+    rolledDiceOnTheBoard[0].textContent = 5;
+    rolledDiceOnTheBoard[1].textContent = 4;
+    rolledDiceOnTheBoard[2].textContent = 4;
+    rolledDiceOnTheBoard[3].textContent = 4;
+    rolledDiceOnTheBoard[4].textContent = 5;
+    rolledDiceOnTheBoard[5].textContent = 5;
+  } else {
+    //DEBUG================================================================================
+    for (let i = 0; i < dice; i++) {
+      iGetRandomDice = Math.floor(Math.random() * 6 + 1);
+      aTheDice.push(iGetRandomDice);
+      rolledDiceOnTheBoard[i].textContent = iGetRandomDice;
+    }
   }
+  index++; //TODO this is just for testing purposes
+  // aTheDice.push(i + 1);
   //So far this is the points you see above the buttons
   let tempPoints = checkForPoints(aTheDice);
   possibleScore.textContent = tempPoints;
@@ -66,7 +66,7 @@ function rollDice(dice) {
     console.log("Zilch");
   }
 }
-l;
+
 //NOTE This is for after you click on a die to keep it will refresh the rolled dice and shift down if necessary
 function adjustDiceOnBoard(dieNumber) {
   for (let i = 0; i < 6; i++) {
@@ -80,6 +80,7 @@ function addingPoints(tempScore) {
   iScoreDuringRoll += tempScore;
 
   if (iScoreDuringRoll >= 500 && bStay && iNumberOfDice != 0) {
+    //FIXME add this to the gameManager()
     bOpeningPointsEntry = true;
   }
   if (bOpeningPointsEntry && bStay && iNumberOfDice != 0) {
@@ -111,13 +112,41 @@ function clearBoard() {
 
 function diceToKeep() {
   //FIXME do something in here to group the dice and move them up to top and add the points
-  addingDice[iDiceHeldIndex].textContent = this.textContent;
-  aTopDice.push(aTheDice.splice(aTheDice.indexOf(+this.textContent), 1));
-  this.textContent = "";
+  if (this.getAttribute("data") == "group") {
+    rolledDiceOnTheBoard.forEach((die) => {
+      if (die.getAttribute("data") === "group") {
+        addingDice[iDiceHeldIndex].textContent = die.textContent;
+        aTopDice.push(aTheDice.splice(aTheDice.indexOf(+die.textContent), 1));
+        die.textContent = "";
 
-  iNumberOfDice--;
+        iNumberOfDice--;
 
-  iDiceHeldIndex++;
+        iDiceHeldIndex++;
+      }
+      // console.log(testings);
+    });
+  } else if (this.getAttribute("data") == "group2") {
+    rolledDiceOnTheBoard.forEach((die) => {
+      if (die.getAttribute("data") === "group2") {
+        addingDice[iDiceHeldIndex].textContent = die.textContent;
+        aTopDice.push(aTheDice.splice(aTheDice.indexOf(+die.textContent), 1));
+        die.textContent = "";
+
+        iNumberOfDice--;
+
+        iDiceHeldIndex++;
+      }
+      // console.log(testings);
+    });
+  } else {
+    addingDice[iDiceHeldIndex].textContent = this.textContent;
+    aTopDice.push(aTheDice.splice(aTheDice.indexOf(+this.textContent), 1));
+    this.textContent = "";
+
+    iNumberOfDice--;
+
+    iDiceHeldIndex++;
+  }
 }
 function diceReset() {
   aTopDice.length = 0;
@@ -129,6 +158,27 @@ function diceReset() {
 
   clearBoard();
 }
+//FIXME still have to check in case there is two sets three. I have to make two separate datasets to
+//help prevent that. That is the plan so far.
+//BUG need to clear this after I move it to the keep stack
+function setDataAttribute(str) {
+  if (str == "") {
+    rolledDiceOnTheBoard.forEach((die) => die.setAttribute("data", "group"));
+  } else if (str == "set") {
+    rolledDiceOnTheBoard.forEach((die) => {
+      if (die.textContent == aThreeKind[0]) die.setAttribute("data", "group");
+      if (die.textContent == aThreeKind[1]) die.setAttribute("data", "group2");
+    });
+  } else {
+    rolledDiceOnTheBoard.forEach((die) => {
+      if (die.textContent == str) die.setAttribute("data", "group");
+    });
+  }
+}
+function clearDataAttributes() {
+  rolledDiceOnTheBoard.forEach((die) => die.removeAttribute("disabled"));
+  rolledDiceOnTheBoard.forEach((die) => die.removeAttribute("data"));
+}
 function checkForStraight(diceScoreTest) {
   //NOTE diceScoreTest is an array that added each die and put that die in its proper array.as in
   //all ones rolled are in [0] while all 2's are in [1] etc.
@@ -136,7 +186,7 @@ function checkForStraight(diceScoreTest) {
   //separate since they are already being used elsewhere for points. prevents double dipping
   if (diceScoreTest.every((die) => die == 1)) {
     diceScoreTest.length = 0;
-    rolledDiceOnTheBoard.forEach((die) => die.setAttribute("data", "straight"));
+    setDataAttribute("");
     return 1500;
   }
 
@@ -150,6 +200,7 @@ function checkForSixOfaKind(diceScoreTest) {
       diceScoreTest[4] == 0;
     }
     diceScoreTest.length = 0; //FIXME testing if this works to keep from double dipping
+    setDataAttribute("");
     return 4000;
   }
   return 0;
@@ -157,22 +208,27 @@ function checkForSixOfaKind(diceScoreTest) {
 function checkForFiveOfaKind(diceScoreTest) {
   if (diceScoreTest[0] == 5) {
     diceScoreTest[0] = 0; //FIXME testing if this I can after check disable any buttons still left
+    setDataAttribute("1");
     return 4000;
   } else if (diceScoreTest[1] == 5) {
     diceScoreTest[1] = 0;
+    setDataAttribute("2");
     return 1000;
   } else if (diceScoreTest[2] == 5) {
     diceScoreTest[2] = 0;
+    setDataAttribute("3");
     return 1500;
   } else if (diceScoreTest[3] == 5) {
     diceScoreTest[3] = 0;
+    setDataAttribute("4");
     return 2000;
   } else if (diceScoreTest[4] == 5) {
     diceScoreTest[4] = 0;
-    // diceScoreTest[4] = 0;
+    setDataAttribute("5");
     return 2500;
   } else if (diceScoreTest[5] == 5) {
     diceScoreTest[5] = 0;
+    setDataAttribute("6");
     return 3000;
   }
 
@@ -181,51 +237,69 @@ function checkForFiveOfaKind(diceScoreTest) {
 function checkForFourOfaKind(diceScoreTest) {
   if (diceScoreTest[0] == 4) {
     diceScoreTest[0] = 0;
+    setDataAttribute("1");
     return 3000;
   } else if (diceScoreTest[1] == 4) {
     diceScoreTest[1] = 0;
+    setDataAttribute("2");
     return 800;
   } else if (diceScoreTest[2] == 4) {
     diceScoreTest[2] = 0;
+    setDataAttribute("3");
     return 1200;
   } else if (diceScoreTest[3] == 4) {
     diceScoreTest[3] = 0;
+    setDataAttribute("4");
     return 1600;
   } else if (diceScoreTest[4] == 4) {
     diceScoreTest[4] = 0;
+    setDataAttribute("5");
     return 2000;
   } else if (diceScoreTest[5] == 4) {
     diceScoreTest[5] = 0;
+    setDataAttribute("6");
     return 2400;
   }
   return 0;
 }
+//NOTE this one was a little more tricky for setting a data-group attribute since you can have 2 three of a kinds
+//and you for some reason may only want to pick one
 function checkForThreeOfaKind(diceScoreTest) {
   let temp = 0; //may have two sets of three
   if (diceScoreTest[0] == 3) {
     diceScoreTest[0] = 0;
+    aThreeKind.push(1);
     temp += 1000;
   }
   if (diceScoreTest[1] == 3) {
     diceScoreTest[1] = 0;
+    aThreeKind.push(2);
     temp += 200;
   }
   if (diceScoreTest[2] == 3) {
     diceScoreTest[2] = 0;
+    aThreeKind.push(3);
     temp += 300;
   }
   if (diceScoreTest[3] == 3) {
     diceScoreTest[3] = 0;
+    aThreeKind.push(4);
     temp += 400;
   }
   if (diceScoreTest[4] == 3) {
     diceScoreTest[4] = 0;
+    aThreeKind.push(5);
     temp += 500;
   }
   if (diceScoreTest[5] == 3) {
     diceScoreTest[5] = 0;
+    aThreeKind.push(6);
     temp += 600;
   }
+  if (aThreeKind.length == 2) {
+    setDataAttribute("set");
+  }
+  aThreeKind.length = 0;
   return temp;
 }
 function checkForSetsOfTwo(diceScoreTest) {
@@ -257,6 +331,8 @@ function checkForSetsOfTwo(diceScoreTest) {
       temp += 1;
     }
     if (temp == 3) {
+      diceScoreTest.length = 0;
+      setDataAttribute("");
       return 1500;
     }
   }
@@ -311,7 +387,7 @@ function checkForOnesFives(diceScoreTest) {
 
 function checkForPoints(dice) {
   const diceScoreTest = [0, 0, 0, 0, 0, 0];
-
+  // setDataAttribute();
   let points = 0;
   //TODO switch to either forEach or map maybe
   for (let i = 0; i < dice.length; i++) {
@@ -352,8 +428,6 @@ function closeZilchPopup() {
   zilchWindow.style.visibility = "hidden";
 }
 //-------------------------------------------starting line----------------------------
-
-settingUpTheBoard(iNumberOfDice);
 
 const rolledDiceOnTheBoard = document.querySelectorAll(".rolled-dice");
 const addingDice = document.querySelectorAll(".kept");
