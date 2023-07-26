@@ -7,12 +7,12 @@ This was one of my first projects when first learning javascript. This and Wordl
 - set up to switch between players
 - beginning if can't get on board but try to stay tell why can't stay
 - Need a way of telling the player to keep rolling if all 6 are on top
-- when all 6 are up top if I hit roll I get zilch instead of a new set of rolls
+- ~~when all 6 are up top if I hit roll I get zilch instead of a new set of rolls~~
 - ~~make notes about what everything does~~
-- need current score to show while playing. right now it only shows potential score
+- ~~need current score to show while playing. right now it only shows potential score~~
 - I think I need to add a gameManager() function
-- I still have to fix the checkForSetsOfTwo() to be able to get clicked and added to the top board
-- need to make addingPoints() not care what it is adding for friendlier usability
+- ~~I still have to fix the checkForSetsOfTwo() to be able to get clicked and added to the top board~~
+- ~~need to make addingPoints() not care what it is adding for friendlier usability~~
 - rollDice() should only roll the dice
 
 # How To Play
@@ -26,13 +26,14 @@ You have to roll at least 500 to get on the board to start.
 The points work if
 You roll a 1 or a 5. 1 == 100 5 = 50;
 You must at least roll a 1 or a 5 or you get zilch(nothing).
-If it is a 1 on any of the 3 to 6 of a kind make the 1 a 10 then multiply so 3 of a kind would be 1000
+
+If it is a 1 on any of the 3 to 6 of a kind make the 1 a 1000 then multiply so 3 of a kind would be 1000
 Other ways of points are, must be done in one roll:
 
-- 3 of a kind = the number on the die x 1
-- 4 of a kind = the number on the die x 2
-- 5 of a kind = the number on the die x 3
-- 6 of a kind = the number on the die x 4
+- 3 of a kind = the number on the die x 100 (example [2,3,4,4,4,6] there are three 4's so 4 x 100 = 400) (number on die (4))
+- 4 of a kind = the number on the die x 400 (example [5,3,5,5,5,6] there are four 5's so 5 x 400 = 2000) (number on die (5))
+- 5 of a kind = the number on the die x 500 (example [6,6,3,6,6,6] there are five 6's so 6 x 500 = 3000) (number on die (6))
+- 6 of a kind = the number on the die x 4 (right now I think this is set to 4000 no matter which die it is)
 - straight = 1500 (has to be done on the very first roll)
 - 3 pairs = 1500 (has to be done on the very first roll)
 
@@ -56,3 +57,7 @@ I'm sure I have missed something or my points may not even match what I wrote. J
 - I have fixed the layout to look a little better. Still have plans for more.
 - I created a map because I am starting to get spaghetti code.
 - I have made it so you can't add the wrong dice up to the upper board
+- I finally was able to put groups of dice up at once to prevent strange dice being up top
+  - example if I have three six's and only put one or two up I would not get 600 just have bad dice
+    now if I click on one six all three would go up so I would always have scoring dice up top.
+- I got the current points working that shows what you have in the upper tray
