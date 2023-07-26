@@ -1,44 +1,43 @@
 "use strict";
 
 let iMainScore = 0;
-let iScoreDuringRoll = 0;
+// let iScoreDuringRoll = 0;
 let bStay = false;
-const aThreeKind = [];
+// let boolTest = false;
 let bOpeningPointsEntry = false; //one tike set only after you have 500 or more points to get on board
-// let createLowerDiceBoard;
-// let createHoldingBoard;
 let iDiceHeldIndex = 0;
 let iGetRandomDice;
 let iNumberOfDice = 6;
-const aTheDice = [];
-const aTopDice = [];
+let iCurrentScore = 0;
 
-// const rolled = document.querySelector(".rolled");
-// const keep = document.querySelector(".keep");
+const aThreeKind = []; //This is for setting 3 of a kind in attributes. You could end up with 2 three of a kinds.
+const aLowerDice = [];
+const aUpperDice = []; //This is to keep track of the dice in the keep row
 const stayBtn = document.querySelector(".stay-btn");
 const rollBtn = document.querySelector(".roll-btn");
 const scoreKeeper = document.querySelector(".score");
+const currentScoreShown = document.querySelector(".accumulated-points");
 const possibleScore = document.querySelector(".possible-score");
 const zilchWindow = document.querySelector(".zilch");
 const zBtn = document.querySelector(".zBtn");
 
 //NOTE I think this is to add points to score after every roll??????????????????????????????????????????????????????
-//I think aTopDice was for score keeping to prevent three separate 1's getting turned from 100 to 1000 etc...?????
-function preRollCheck() {
-  if (aTopDice.length > 0) {
-    addingPoints(checkForPoints(aTopDice));
-    aTopDice.length = 0;
+//I think aUpperDice was for score keeping to prevent three separate 1's getting turned from 100 to 1000 etc...?????
+function checkTopForPoints() {
+  if (aUpperDice.length > 0) {
+    addingPoints(checkForPoints(aUpperDice)); //FIXME will add score keeping for middle and top here
+    aUpperDice.length = 0;
   }
 }
 let index = 0; //FIXME this is just for debugging issues
 
 function rollDice(dice) {
-  preRollCheck();
+  // preRollCheck();
   clearDataAttributes();
-  aTheDice.length = 0; //resets the dice to blank
-  //DEBUG ============================================================================
+  aLowerDice.length = 0; //resets the dice to blank
+  //FIXME DEBUG use only============================================================================
   if (index === 0) {
-    aTheDice.push(5, 4, 4, 4, 5, 5);
+    aLowerDice.push(5, 4, 4, 4, 5, 5);
     rolledDiceOnTheBoard[0].textContent = 5;
     rolledDiceOnTheBoard[1].textContent = 4;
     rolledDiceOnTheBoard[2].textContent = 4;
@@ -49,20 +48,21 @@ function rollDice(dice) {
     //DEBUG================================================================================
     for (let i = 0; i < dice; i++) {
       iGetRandomDice = Math.floor(Math.random() * 6 + 1);
-      aTheDice.push(iGetRandomDice);
+      aLowerDice.push(iGetRandomDice);
       rolledDiceOnTheBoard[i].textContent = iGetRandomDice;
     }
   }
   index++; //TODO this is just for testing purposes
-  // aTheDice.push(i + 1);
+  // aLowerDice.push(i + 1);
   //So far this is the points you see above the buttons
-  let tempPoints = checkForPoints(aTheDice);
+  let tempPoints = checkForPoints(aLowerDice);
   possibleScore.textContent = tempPoints;
 
   if (tempPoints == 0 && iDiceHeldIndex != 6) {
-    zilchPopup();
+    zilchPopup(); //BUG my current points don't clear out
     diceReset();
-    iScoreDuringRoll = 0;
+    iCurrentScore = 0;
+    currentScoreShown.textContent = iCurrentScore;
     console.log("Zilch");
   }
 }
@@ -73,33 +73,54 @@ function adjustDiceOnBoard(dieNumber) {
     rolledDiceOnTheBoard[i].textContent = "";
   }
   for (let i = 0; i < dieNumber; i++) {
-    rolledDiceOnTheBoard[i].textContent = aTheDice[i];
+    rolledDiceOnTheBoard[i].textContent = aLowerDice[i];
   }
 }
-function addingPoints(tempScore) {
-  iScoreDuringRoll += tempScore;
-
-  if (iScoreDuringRoll >= 500 && bStay && iNumberOfDice != 0) {
+function addingMainPoints() {
+  if (iCurrentScore >= 500 && bStay && iNumberOfDice != 0) {
     //FIXME add this to the gameManager()
     bOpeningPointsEntry = true;
   }
   if (bOpeningPointsEntry && bStay && iNumberOfDice != 0) {
-    iMainScore += iScoreDuringRoll;
+    iMainScore += iCurrentScore;
     scoreKeeper.textContent = iMainScore;
-    iScoreDuringRoll = 0;
-    diceReset();
-  } else if (iNumberOfDice == 0) {
-    diceReset(); //TODO tell player they have to roll all the dice but keep what points they have
-    console.log("Roll the dice");
+    iCurrentScore = 0;
+    // diceReset();//BUG testing this elsewhere
   }
 }
-//TODO switch to a forEach() loop of maybe a map();
+function addingPoints(tempScore) {
+  iCurrentScore += tempScore;
+
+  // if (iCurrentScore >= 500 && bStay && iNumberOfDice != 0) {
+  //   //FIXME add this to the gameManager()
+  //   bOpeningPointsEntry = true;
+  // }
+  // if (bOpeningPointsEntry && bStay && iNumberOfDice != 0) {
+  //   iMainScore += iCurrentScore;
+  //   scoreKeeper.textContent = iMainScore;
+  //   iCurrentScore = 0;
+  //   // diceReset();//BUG testing this elsewhere
+  // }
+  // else if (iNumberOfDice == 0 && boolTest) {
+  //   diceReset(); //TODO tell player they have to roll all the dice but keep what points they have
+  //   console.log("Roll the dice");
+  // }
+  // else {
+  // iCurrentScore += tempScore;
+  currentScoreShown.textContent = iCurrentScore;
+  if (iNumberOfDice == 0) {
+    // boolTest = true;
+    diceReset();
+  }
+  // }
+}
+
 function clearTop() {
   for (let i = 0; i < 6; i++) {
     addingDice[i].textContent = "";
   }
 }
-//TODO maybe the same here as for clearTop()
+
 function clearBottom() {
   for (let i = 0; i < 6; i++) {
     rolledDiceOnTheBoard[i].textContent = "";
@@ -111,12 +132,13 @@ function clearBoard() {
 }
 
 function diceToKeep() {
-  //FIXME do something in here to group the dice and move them up to top and add the points
   if (this.getAttribute("data") == "group") {
     rolledDiceOnTheBoard.forEach((die) => {
       if (die.getAttribute("data") === "group") {
         addingDice[iDiceHeldIndex].textContent = die.textContent;
-        aTopDice.push(aTheDice.splice(aTheDice.indexOf(+die.textContent), 1));
+        aUpperDice.push(
+          aLowerDice.splice(aLowerDice.indexOf(+die.textContent), 1)
+        );
         die.textContent = "";
 
         iNumberOfDice--;
@@ -129,7 +151,9 @@ function diceToKeep() {
     rolledDiceOnTheBoard.forEach((die) => {
       if (die.getAttribute("data") === "group2") {
         addingDice[iDiceHeldIndex].textContent = die.textContent;
-        aTopDice.push(aTheDice.splice(aTheDice.indexOf(+die.textContent), 1));
+        aUpperDice.push(
+          aLowerDice.splice(aLowerDice.indexOf(+die.textContent), 1)
+        );
         die.textContent = "";
 
         iNumberOfDice--;
@@ -140,27 +164,28 @@ function diceToKeep() {
     });
   } else {
     addingDice[iDiceHeldIndex].textContent = this.textContent;
-    aTopDice.push(aTheDice.splice(aTheDice.indexOf(+this.textContent), 1));
+    aUpperDice.push(
+      aLowerDice.splice(aLowerDice.indexOf(+this.textContent), 1)
+    );
     this.textContent = "";
 
     iNumberOfDice--;
 
     iDiceHeldIndex++;
   }
+  checkTopForPoints(); //BUG this is under testing to get a current score to show
 }
 function diceReset() {
-  aTopDice.length = 0;
-  aTheDice.length = 0;
-
-  bStay = false;
+  aUpperDice.length = 0;
+  aLowerDice.length = 0;
+  // boolTest = false;
+  // bStay = false;//FIXME testing if I can move to the roll button
   iDiceHeldIndex = 0;
   iNumberOfDice = 6;
 
   clearBoard();
 }
-//FIXME still have to check in case there is two sets three. I have to make two separate datasets to
-//help prevent that. That is the plan so far.
-//BUG need to clear this after I move it to the keep stack
+
 function setDataAttribute(str) {
   if (str == "") {
     rolledDiceOnTheBoard.forEach((die) => die.setAttribute("data", "group"));
@@ -199,7 +224,7 @@ function checkForSixOfaKind(diceScoreTest) {
     } else if (diceScoreTest[4] == 6) {
       diceScoreTest[4] == 0;
     }
-    diceScoreTest.length = 0; //FIXME testing if this works to keep from double dipping
+    diceScoreTest.length = 0;
     setDataAttribute("");
     return 4000;
   }
@@ -207,7 +232,7 @@ function checkForSixOfaKind(diceScoreTest) {
 }
 function checkForFiveOfaKind(diceScoreTest) {
   if (diceScoreTest[0] == 5) {
-    diceScoreTest[0] = 0; //FIXME testing if this I can after check disable any buttons still left
+    diceScoreTest[0] = 0;
     setDataAttribute("1");
     return 4000;
   } else if (diceScoreTest[1] == 5) {
@@ -298,6 +323,8 @@ function checkForThreeOfaKind(diceScoreTest) {
   }
   if (aThreeKind.length == 2) {
     setDataAttribute("set");
+  } else if (aThreeKind.length == 1) {
+    setDataAttribute(aThreeKind[0].toString());
   }
   aThreeKind.length = 0;
   return temp;
@@ -336,7 +363,7 @@ function checkForSetsOfTwo(diceScoreTest) {
       return 1500;
     }
   }
-  //BUG I still need to add disable if no three sets
+
   return 0;
 }
 
@@ -376,8 +403,7 @@ function checkForOnesFives(diceScoreTest) {
     temp += diceScoreTest[0] * 100;
     rolledDiceOnTheBoard.forEach((die) => {
       console.log(die);
-      if (die.textContent == 1) die.setAttribute("data", "one");
-    }); //FIXME testing
+    });
   }
   if (diceScoreTest[4] >= 1) {
     temp += diceScoreTest[4] * 50;
@@ -389,7 +415,7 @@ function checkForPoints(dice) {
   const diceScoreTest = [0, 0, 0, 0, 0, 0];
   // setDataAttribute();
   let points = 0;
-  //TODO switch to either forEach or map maybe
+
   for (let i = 0; i < dice.length; i++) {
     if (dice[i] == 1) {
       diceScoreTest[0]++;
@@ -418,7 +444,10 @@ function checkForPoints(dice) {
 }
 function stayingBtnHit() {
   bStay = true; //TODO maybe do the dice number check here
-  preRollCheck();
+  // preRollCheck(); //FIXME Maybe add reset here
+  addingMainPoints();
+  diceReset();
+  currentScoreShown.textContent = iCurrentScore;
 }
 function zilchPopup() {
   zilchWindow.style.visibility = "visible";
@@ -440,6 +469,7 @@ stayBtn.addEventListener("click", () => {
   stayingBtnHit();
 });
 rollBtn.addEventListener("click", () => {
+  bStay = false;
   adjustDiceOnBoard(iNumberOfDice);
   rollDice(iNumberOfDice);
 });
