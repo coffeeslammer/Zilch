@@ -25,7 +25,7 @@ const zBtn = document.querySelector(".zBtn");
 //I think aUpperDice was for score keeping to prevent three separate 1's getting turned from 100 to 1000 etc...?????
 function checkTopForPoints() {
   if (aUpperDice.length > 0) {
-    addingPoints(checkForPoints(aUpperDice)); //FIXME will add score keeping for middle and top here
+    addingPoints(checkForPoints(aUpperDice));
     aUpperDice.length = 0;
   }
 }
@@ -59,7 +59,7 @@ function rollDice(dice) {
   possibleScore.textContent = tempPoints;
 
   if (tempPoints == 0 && iDiceHeldIndex != 6) {
-    zilchPopup(); //BUG my current points don't clear out
+    zilchPopup();
     diceReset();
     iCurrentScore = 0;
     currentScoreShown.textContent = iCurrentScore;
@@ -78,35 +78,16 @@ function adjustDiceOnBoard(dieNumber) {
 }
 function addingMainPoints() {
   if (iCurrentScore >= 500 && bStay && iNumberOfDice != 0) {
-    //FIXME add this to the gameManager()
     bOpeningPointsEntry = true;
   }
   if (bOpeningPointsEntry && bStay && iNumberOfDice != 0) {
     iMainScore += iCurrentScore;
     scoreKeeper.textContent = iMainScore;
     iCurrentScore = 0;
-    // diceReset();//BUG testing this elsewhere
   }
 }
 function addingPoints(tempScore) {
   iCurrentScore += tempScore;
-
-  // if (iCurrentScore >= 500 && bStay && iNumberOfDice != 0) {
-  //   //FIXME add this to the gameManager()
-  //   bOpeningPointsEntry = true;
-  // }
-  // if (bOpeningPointsEntry && bStay && iNumberOfDice != 0) {
-  //   iMainScore += iCurrentScore;
-  //   scoreKeeper.textContent = iMainScore;
-  //   iCurrentScore = 0;
-  //   // diceReset();//BUG testing this elsewhere
-  // }
-  // else if (iNumberOfDice == 0 && boolTest) {
-  //   diceReset(); //TODO tell player they have to roll all the dice but keep what points they have
-  //   console.log("Roll the dice");
-  // }
-  // else {
-  // iCurrentScore += tempScore;
   currentScoreShown.textContent = iCurrentScore;
   if (iNumberOfDice == 0) {
     // boolTest = true;
@@ -178,8 +159,6 @@ function diceToKeep() {
 function diceReset() {
   aUpperDice.length = 0;
   aLowerDice.length = 0;
-  // boolTest = false;
-  // bStay = false;//FIXME testing if I can move to the roll button
   iDiceHeldIndex = 0;
   iNumberOfDice = 6;
 
@@ -443,8 +422,7 @@ function checkForPoints(dice) {
   return points;
 }
 function stayingBtnHit() {
-  bStay = true; //TODO maybe do the dice number check here
-  // preRollCheck(); //FIXME Maybe add reset here
+  bStay = true;
   addingMainPoints();
   diceReset();
   currentScoreShown.textContent = iCurrentScore;
@@ -474,22 +452,3 @@ rollBtn.addEventListener("click", () => {
   rollDice(iNumberOfDice);
 });
 zBtn.addEventListener("click", closeZilchPopup);
-
-//problems to resolve
-//1 keep score ------better but still bugged
-
-//issues
-
-//------------------------NOTES--------------------------------------------
-
-//I haven't set a win yet. use css for that too
-//definitely need to make the board prettier
-
-//-------------------More Notes----------------------------------------
-
-//I have cleaned it up more but still having some issues
-//I'm getting zilch when I have all the dice on the upper rack
-//I haven't got it quite right on how to continue rolling and keeping the points
-//maybe somehow check if I have points to tell computer its not a zilch
-//I was able to get rid of some more variables by passing arguments and returning
-//If I understood classes better I know it would clean this up tremendously
